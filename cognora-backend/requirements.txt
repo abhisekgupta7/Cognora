@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+dotenv
+langchain-postgres
+psycopg2-binary
+langchain
+psycopg
+langgraph
+langchain-google-genai
+rq
+redis
+faster-whisper
+pydantic
+datetime
+langchain-postgres
+youtube-transcript-api
+

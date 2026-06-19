@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: ./cognora-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://neondb_owner:npg_fsHuplC85GAg@ep-old-moon-aobws7sw-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: ./cognora-backend
+    command: python -m workers.worker
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build:
+      context: ./cognora-frontend
+    ports:
+      - "3000:3000"
