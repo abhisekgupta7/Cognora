@@ -10,7 +10,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles, Video } from "lucide-react";
 
 export default function CourseIdClient({
   courseId,
@@ -47,74 +47,118 @@ export default function CourseIdClient({
   }
 
   return (
-    <div className="p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LEFT: LECTURES */}
-        <div className="lg:col-span-2 space-y-4">
-          <h1 className="text-xl font-semibold">
-            Course Detail Page for Course ID: {courseId}
-          </h1>
+  <div className="max-w-7xl mx-auto px-6 py-10 text-[#1C1C1C]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        
+        {/* LEFT: LECTURES / LESSON TRACK */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Branded Section Header in Sentence Case */}
+          <div className="mb-4">
+            <span className="text-xs font-bold tracking-wider text-[#F97316] bg-[#F97316]/10 px-3 py-1 rounded-full inline-block">
+              Course integration workspace
+            </span>
+            <h1 className="text-3xl font-bold tracking-tight mt-3">
+              Reviewing curriculum for <span className="text-[#F97316]">Course {courseId}</span>
+            </h1>
+            <p className="text-[#1C1C1C]/70 font-medium mt-1">
+              Verify how your lesson videos map to Cognora's contextual core.
+            </p>
+          </div>
 
           {lessons.map((lesson) => (
-            <Card key={lesson.id}>
-              <CardHeader>
-                <CardTitle>{lesson.name}</CardTitle>
+            <Card 
+              key={lesson.id} 
+              className="bg-white rounded-2xl border border-[#F97316]/10 shadow-sm p-6 md:p-8 flex flex-col gap-5"
+            >
+              <CardHeader className="p-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#FAFAF8] border border-[#1C1C1C]/5 flex items-center justify-center text-[#F97316]">
+                    <Video className="w-5 h-5" strokeWidth={2.2} />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-[#1C1C1C]">
+                    {lesson.name}
+                  </CardTitle>
+                </div>
               </CardHeader>
 
-              <CardContent className="space-y-3">
-                <CardDescription>{lesson.description}</CardDescription>
-
-                <CardDescription>
-                  Lesson Video Url: {lesson.lesson_video_url}
+              <CardContent className="p-0 space-y-5">
+                <CardDescription className="text-[#1C1C1C]/70 font-medium leading-relaxed">
+                  {lesson.description}
                 </CardDescription>
 
-                <div className="aspect-video w-full">
+                {/* Upgraded iframe container to utilize responsive aspect ratios instead of rigid pixel properties */}
+                <div className="aspect-video w-full rounded-xl overflow-hidden border border-[#1C1C1C]/5 shadow-inner bg-[#FAFAF8]">
                   <iframe
-                    className="w-140 h-79  rounded-md"
+                    className="w-full h-full"
                     src={toYouTubeEmbed(lesson.lesson_video_url || "")}
                     title={lesson.name}
                     allowFullScreen
                   />
                 </div>
               </CardContent>
-              <Button
-                onClick={() => {
-                  setShowChatbot((prev) => !prev);
-                  setSelectedLessonId(lesson.id.toString());
-                }}
-                variant="outline"
-                size="sm"
-              >
-                <p>Ai tutor</p>
-                <ArrowRight className="ml-2" />
-              </Button>
+
+              {/* Clean, individual action selector */}
+              <div className="pt-2">
+                <Button
+                  onClick={() => {
+                    setShowChatbot(true);
+                    setSelectedLessonId(lesson.id.toString());
+                  }}
+                  variant="outline"
+                  className="h-11 px-5 rounded-xl border border-[#F97316]/20 text-[#1C1C1C] font-medium bg-white hover:bg-[#F97316] hover:text-white transition-all flex items-center gap-2 text-sm cursor-pointer"
+                >
+                  <span>Test AI tutor for this lesson</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
             </Card>
           ))}
         </div>
 
-        {/* RIGHT: AI TUTOR */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-4">
-            <div className="p-4 border rounded-lg bg-green/5 border-white/10 h-[80vh]">
-              <h2 className="text-lg font-semibold mb-2">AI Tutor</h2>
-
-              <div className="text-sm text-muted-foreground">
-                Ask questions about this course content.
+        {/* RIGHT: LIVE COGNORA WIDGET SIMULATION */}
+        <div className="lg:col-span-1 lg:sticky lg:top-24">
+          {/* Dropped green/5 and dark mode border structures for clear warm-bordered aesthetics */}
+          <div className="bg-white rounded-2xl border border-[#F97316]/15 p-6 shadow-sm min-h-[70vh] flex flex-col">
+            
+            <div className="border-b border-[#1C1C1C]/5 pb-4 mb-5">
+              <div className="flex items-center gap-2 text-[#F97316] mb-1">
+                <Sparkles className="w-4 h-4" fill="currentColor" />
+                <span className="text-xs font-bold tracking-wide uppercase">LMS Widget Simulator</span>
               </div>
+              <h2 className="text-xl font-bold text-[#1C1C1C]">Cognora interactive view</h2>
+              <p className="text-sm text-[#1C1C1C]/60 font-medium mt-1">
+                Your students can seamlessly interact here using English, Hindi, or Nepali text.
+              </p>
+            </div>
 
-              {/* Replace this with your chatbot component later */}
-              {showChatbot && (
-                <div className="mt-4 h-full border rounded-md p-2">
+            {/* Dynamic Interactive Engine Bracket */}
+            <div className="grow flex flex-col justify-between">
+              {showChatbot ? (
+                <div className="grow rounded-xl border border-[#1C1C1C]/5 bg-[#FAFAF8] p-2 h-full min-h-112.5">
                   <Chatbot
                     courseId={courseId}
                     lessonId={selectedLessonId || ""}
                     orgId={orgId}
                   />
                 </div>
+              ) : (
+                // Added an intentional placeholder empty state so the layout does not look broken when initialized
+                <div className="grow flex flex-col items-center justify-center text-center p-6 bg-[#FAFAF8]/50 rounded-xl border border-dashed border-[#1C1C1C]/10 min-h-87.5">
+                  <div className="w-12 h-12 rounded-full bg-[#F97316]/10 flex items-center justify-center text-[#F97316] mb-4">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <p className="text-sm font-bold text-[#1C1C1C]">No active tutoring session</p>
+                  <p className="text-xs text-[#1C1C1C]/60 max-w-55 mt-1 leading-relaxed">
+                    Select a lesson sequence on the left to wake up the live AI preview.
+                  </p>
+                </div>
               )}
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
   );

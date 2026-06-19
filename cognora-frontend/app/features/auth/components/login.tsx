@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Home, Loader2 } from "lucide-react";
 
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -29,20 +30,27 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-white/5 p-8 shadow-sm">
-     
+    <div className="w-full bg-white rounded-2xl border border-[#F97316]/10 p-8 shadow-sm">
 
-      {/* Google Button */}
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full h-10 border-white/10 bg-white/5 text-white-200 hover:bg-white/10 cursor-pointer flex items-center justify-center gap-2"
-        onClick={handleGoogleLogin}
-        disabled={isGoogleLoading}
-      >
-        {isGoogleLoading ? "Continuing..." : "Google"}
-      </Button>
+  {/* Google Button */}
+  <Button
+    type="button"
+    variant="outline"
+    className="w-full h-12 rounded-2xl border border-[#1C1C1C]/15 bg-white text-[#1C1C1C] font-medium hover:bg-[#FAFAF8] hover:border-[#1C1C1C]/30 transition-all flex items-center justify-center gap-3 cursor-pointer"
+    onClick={handleGoogleLogin}
+    disabled={isGoogleLoading}
+  >
+    {/* Lucide Icons */}
+    {isGoogleLoading ? (
+      <Loader2 className="w-5 h-5 animate-spin text-[#F97316]" />
+    ) : (
+      <Home className="w-5 h-5" /> 
+    )}
+    
+    {/* Human, sentence-case copy */}
+    {isGoogleLoading ? "Connecting..." : "Continue with Google"}
+  </Button>
 
-    </div>
+</div>
   );
 }

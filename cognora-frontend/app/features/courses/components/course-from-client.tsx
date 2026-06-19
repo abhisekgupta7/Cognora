@@ -1,4 +1,5 @@
 "use client";
+import { Plus } from "lucide-react";
 import { createCourse } from "../actions/course";
 
 export default function CourseFromClient() {
@@ -12,16 +13,46 @@ export default function CourseFromClient() {
     });
   };
   return (
-    <div className="p-4 border rounded-lg bg-green/5 border-white/10">
-      <form className="space-y-4 flex flex-col" onSubmit={handleSubmit}>
-        <input className="p-2 border rounded-lg bg-white/10 border-white/20 text-black" type="text" name="name" placeholder="Course Name" />
-        <input
-          className="p-2 border rounded-lg bg-white/10 border-white/20 text-black"
-          type="text"
-          name="description"
-          placeholder="Course Description"
-        />
-        <button className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700" type="submit">Create Course</button>
+   <div className="w-full text-[#1C1C1C]">
+      <form className="space-y-5 flex flex-col" onSubmit={handleSubmit}>
+        
+        {/* Course Name Input */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-[#1C1C1C]/60 tracking-wide uppercase">
+            Course title
+          </label>
+          <input
+            type="text"
+            name="name"
+            required
+            placeholder="e.g., Class 10 Physics — Mechanics"
+            className="w-full h-12 px-4 bg-white border border-[#1C1C1C]/10 rounded-xl font-medium text-sm text-[#1C1C1C] placeholder-[#1C1C1C]/40 focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition-all"
+          />
+        </div>
+
+        {/* Course Description Input — Upgraded to textarea for better content entry */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-[#1C1C1C]/60 tracking-wide uppercase">
+            Course description
+          </label>
+          <textarea
+            name="description"
+            required
+            rows={3}
+            placeholder="Provide a summary of what your students will learn in this course..."
+            className="w-full min-h-25 p-4 bg-white border border-[#1C1C1C]/10 rounded-xl font-medium text-sm text-[#1C1C1C] placeholder-[#1C1C1C]/40 focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition-all resize-none leading-relaxed"
+          />
+        </div>
+
+        {/* Primary Action Button */}
+        <button
+          type="submit"
+          className="w-full h-12 mt-2 bg-[#F97316] hover:bg-[#F97316]/90 text-white font-medium rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
+        >
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
+          <span>Create course</span>
+        </button>
+        
       </form>
     </div>
   );
