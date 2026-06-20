@@ -1,4 +1,5 @@
 import { SendHorizontal, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Chatbot({
   courseId,
@@ -36,9 +37,15 @@ export default function Chatbot({
         org_id: orgId,
       }),
     });
-    console.log("API response status:", response.status);
     const data = await response.json();
-    console.log(data);
+
+    if (!response.ok) {
+      console.error("Chat API error:", response.status, data);
+      toast.error("Failed to get response from AI tutor. Please try again.");
+      return;
+    }
+
+    console.log("Chat response:", data);
   };
   return (
     <div className="flex flex-col h-full bg-[#FAFAF8] text-[#1C1C1C] rounded-xl overflow-hidden">

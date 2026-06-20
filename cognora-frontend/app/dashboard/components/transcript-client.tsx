@@ -1,16 +1,20 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Course } from "@/app/features/courses/types/course";
 import { Cpu, Languages } from "lucide-react";
 
-export default function TranscriptClient({ courses, orgId }: { courses: Course[], orgId: number }) {
+export default function TranscriptClient({
+  courses,
+  orgId,
+}: {
+  courses: Course[];
+  orgId: number;
+}) {
   const handleTranscriptInitiation = async (courseId: string) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}/ingestion/ingest_course`, {
+    const response = await fetch("/api/transcript", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         course_id: courseId,
         org_id: orgId,
@@ -18,7 +22,7 @@ export default function TranscriptClient({ courses, orgId }: { courses: Course[]
     });
     const data = await response.json();
 
-    if (response.ok && data.success) {
+    if (response.ok && data.status === "success") {
       console.log("Transcript initiated successfully:", data);
       toast.success("Transcript initiated successfully!");
     } else {
@@ -27,21 +31,19 @@ export default function TranscriptClient({ courses, orgId }: { courses: Course[]
     }
   };
   return (
-<div className="w-full text-[#1C1C1C]">
-      
+    <div className="w-full text-[#1C1C1C]">
       {/* Section metadata header */}
       <p className="text-xs font-bold text-[#1C1C1C]/50 uppercase tracking-wide mb-4">
         Available course libraries
       </p>
-      
+
       {/* List-row layout for a cleaner B2B SaaS dashboard execution */}
       <div className="space-y-3">
         {courses.map((course) => (
-          <div 
-            key={course.id} 
+          <div
+            key={course.id}
             className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white border border-[#1C1C1C]/5 rounded-xl gap-4 hover:border-[#F97316]/20 transition-all"
           >
-            
             {/* Left Side: Course contextual alignment tracking */}
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-[#FAFAF8] border border-[#1C1C1C]/5 flex items-center justify-center text-[#F97316] shrink-0">
@@ -67,11 +69,9 @@ export default function TranscriptClient({ courses, orgId }: { courses: Course[]
               <Cpu className="w-3.5 h-3.5" />
               <span>Generate AI transcript</span>
             </button>
-
           </div>
         ))}
       </div>
-
     </div>
   );
 }
