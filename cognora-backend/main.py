@@ -6,6 +6,8 @@ from api.ingestion import Ingest_router
 app = FastAPI()
 origins = [
     "http://localhost:3000",
+    "https://cognora-frontend.abhisekgupta7.com.np",
+    "https://cognora-backend.abhisekgupta7.com.np",
     "http://127.0.0.1:3000",
 ]
 app.add_middleware(

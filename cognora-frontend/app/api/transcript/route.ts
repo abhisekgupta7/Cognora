@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
 
   const response = await fetch(
-    `${process.env.FASTAPI_URL}/ingestion/ingest_course`,
+    `${process.env.NEXT_PUBLIC_FASTAPI_URL}/ingestion/ingest_course`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
