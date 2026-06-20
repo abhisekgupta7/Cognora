@@ -16,10 +16,10 @@ export async function POST(req: NextRequest) {
   );
 
   const data = await response.json();
-  if (response.ok && data.success) {
-    console.log("Transcript initiated successfully:", data);
-  } else {
-    console.error("Failed to initiate transcript:", data);
-  }
+if (response.ok) {
+  console.log("Transcript initiated successfully:", data);
+} else {
+  console.error("Failed to initiate transcript:", data);
+}
     return NextResponse.json(data, { status: response.status });
 }

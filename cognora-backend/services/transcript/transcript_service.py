@@ -3,12 +3,24 @@ from youtube_transcript_api import (
     NoTranscriptFound,
     TranscriptsDisabled
 )
+from youtube_transcript_api.proxies import WebshareProxyConfig
+import os
+from dotenv import load_dotenv
+
 from repositories.transcript_repo import TranscriptRepository
 from services.transcript.youtube_service import YoutubeService
 from services.transcript.whisper_service import WhisperService
 from services.transcript.translator_service import TranslatorService
 from services.transcript.language_services import LanguageService
 LANGUAGES=["en","hi"]
+
+load_dotenv()
+
+proxy_config = WebshareProxyConfig(
+    proxy_username=os.getenv("PROXY_USERNAME"),
+    proxy_password=os.getenv("PROXY_PASSWORD"),
+)
+
 class TranscriptService:
 
     def get_or_create_transcript(self, video_url: str, org_id: int, lesson_id: str):
@@ -22,8 +34,7 @@ class TranscriptService:
             video_id =self.extract_video_id(video_url)
             for lang in LANGUAGES:
                 try:
-
-                    transcript = YouTubeTranscriptApi().fetch(
+                    transcript = YouTubeTranscriptApi(proxy_config=proxy_config).fetch(
                     video_id,
                     languages=[lang]
                 )
