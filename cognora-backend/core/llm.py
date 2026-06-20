@@ -9,10 +9,9 @@ load_dotenv()
 
 def get_embedding_model():
     return GoogleGenerativeAIEmbeddings(
-        model="models/gemini-embedding-exp-03-07",
+        model="models/text-embedding-004",
         google_api_key=os.getenv("GOOGLE_API_KEY"),
     )
-
 def get_llm():
     return ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
