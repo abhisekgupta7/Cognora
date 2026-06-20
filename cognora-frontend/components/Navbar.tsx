@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { SignInButton, UserButton, Show } from "@clerk/nextjs";
 import { Button } from "./ui/button";
-import { ClerkProvider } from "@clerk/nextjs";
+import { SignInButton, UserButton, Show } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 export default function Navbar() {
   return (
@@ -35,18 +35,24 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
+        
 
         {/* Right Side: Auth & User Actions */}
-        <div className="flex items-center gap-4 cursor-pointer">
-          <Show when="signed-out">
-            {/* Note: Ensure your SignInButton inherits or uses a rounded-2xl CTA style (e.g. bg-[#F97316] text-white px-6 py-2.5 rounded-2xl font-medium) */}
-            <SignInButton  />
-          </Show>
+ 
 
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </div>
+<div className="flex items-center gap-4">
+  <Show when="signed-out">
+    <SignInButton>
+      <button className="cursor-pointer bg-[#F97316] text-white px-6 py-2.5 rounded-2xl font-medium hover:bg-[#F97316]/90 transition-colors">
+        Sign In
+      </button>
+    </SignInButton>
+  </Show>
+
+  <Show when="signed-in">
+    <UserButton />
+  </Show>
+</div>
         
       </div>
     </nav>
