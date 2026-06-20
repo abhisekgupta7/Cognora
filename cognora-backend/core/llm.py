@@ -6,25 +6,18 @@ from faster_whisper import WhisperModel
 
 load_dotenv()
 
-# Configuration
-PROJECT_ID = "cognora-498416"
-LOCATION = "us-central1"
-
-def get_llm():
-    # Automatically routes to Vertex AI because 'project' is passed
-    return ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",    # Use modern 2.5 flash models
-        project=PROJECT_ID,
-        location=LOCATION,
-        temperature=0.7,
-    )
 
 def get_embedding_model():
-    # Routes to Vertex AI and handles your exact 3072 dimension database constraint
     return GoogleGenerativeAIEmbeddings(
-        model="gemini-embedding-2-preview",  # Modern embedding model defaulting to 3072 dim
-        project=PROJECT_ID,
-        location=LOCATION,
+        model="models/gemini-embedding-exp-03-07",
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+    )
+
+def get_llm():
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+        temperature=0.7,
     )
 
 def whisper_model():
