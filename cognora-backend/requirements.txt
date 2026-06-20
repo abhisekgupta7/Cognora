@@ -15,4 +15,5 @@ datetime
 langchain-postgres
 youtube-transcript-api
 spacy
+en_core_web_sm
 
