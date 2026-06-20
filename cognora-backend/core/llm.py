@@ -9,7 +9,7 @@ load_dotenv()
 
 def get_embedding_model():
     return GoogleGenerativeAIEmbeddings(
-        model="text-embedding-004",
+        model="models/gemini-embedding-2-preview",
         google_api_key=os.getenv("GOOGLE_API_KEY"),
     )
 def get_llm():
@@ -26,3 +26,4 @@ def whisper_model():
 llm = get_llm()
 embedding_model = get_embedding_model()
 whisper_model = whisper_model()
+
