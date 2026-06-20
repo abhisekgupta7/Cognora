@@ -10,17 +10,17 @@ import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { Course } from "../types/course";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default async function CoursePage() {
-  let courses:Course[] = [];
+  let courses: Course[] = [];
   try {
     courses = await getAllCourses();
   } catch (e) {
-    console.error('Failed to fetch courses:', e);
+    console.error("Failed to fetch courses:", e);
   }
 
-  if (courses.length === 0) { 
+  if (courses.length === 0) {
     return <div>No courses available.</div>;
   }
   return (
@@ -34,15 +34,18 @@ export default async function CoursePage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {courses.map((course) => (
-          <Card 
-            key={course.id} 
-            className="bg-white rounded-2xl border border-[#F97316]/15 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full"
+          <Card
+            key={course.id}
+            className="bg-white rounded-lg border border-[#F97316]/15 shadow-sm hover:shadow-md transition-shadow flex flex-col"
           >
             <CardContent className="p-8 flex flex-col grow">
               <div className="w-12 h-12 bg-[#FAFAF8] rounded-xl flex items-center justify-center mb-6 border border-[#1C1C1C]/5">
-                <BookOpen className="w-6 h-6 text-[#F97316]" strokeWidth={2.5} />
+                <BookOpen
+                  className="w-6 h-6 text-[#F97316]"
+                  strokeWidth={2.5}
+                />
               </div>
               <CardTitle className="text-xl font-bold text-[#1C1C1C] mb-3 leading-tight">
                 {course.name}
@@ -51,8 +54,8 @@ export default async function CoursePage() {
                 {course.description}
               </CardDescription>
               <CardAction className="mt-auto">
-                <Link 
-                  href={`/courses/${course.id}`} 
+                <Link
+                  href={`/courses/${course.id}`}
                   className="w-full h-12 flex items-center justify-center gap-2 bg-[#FAFAF8] hover:bg-[#F97316] text-[#1C1C1C] hover:text-white border border-[#1C1C1C]/5 hover:border-transparent font-medium rounded-xl transition-all"
                 >
                   Manage course

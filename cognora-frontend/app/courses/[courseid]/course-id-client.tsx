@@ -47,29 +47,26 @@ export default function CourseIdClient({
   }
 
   return (
-  <div className="max-w-7xl mx-auto px-6 py-10 text-[#1C1C1C]">
+    <div className="max-w-7xl mx-auto px-6 py-10 text-[#1C1C1C]">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        
         {/* LEFT: LECTURES / LESSON TRACK */}
-        <div className="lg:col-span-2 space-y-8">
-          
+        <div className="lg:col-span-2 space-y-4">
           {/* Branded Section Header in Sentence Case */}
-          <div className="mb-4">
+          <div className="mb-1">
             <span className="text-xs font-bold tracking-wider text-[#F97316] bg-[#F97316]/10 px-3 py-1 rounded-full inline-block">
-              Course integration workspace
+              Course workspace
             </span>
             <h1 className="text-3xl font-bold tracking-tight mt-3">
-              Reviewing curriculum for <span className="text-[#F97316]">Course {courseId}</span>
+              Reviewing curriculum for{" "}
+              <span className="text-[#F97316]">Course {courseId}</span>
             </h1>
-            <p className="text-[#1C1C1C]/70 font-medium mt-1">
-              Verify how your lesson videos map to Cognora's contextual core.
-            </p>
+            <p className="text-[#1C1C1C]/70 font-bold text-2xl m-3">Lessons: </p>
           </div>
 
           {lessons.map((lesson) => (
-            <Card 
-              key={lesson.id} 
-              className="bg-white rounded-2xl border border-[#F97316]/10 shadow-sm p-6 md:p-8 flex flex-col gap-5"
+            <Card
+              key={lesson.id}
+              className="bg-white rounded-2xl border border-[#F97316]/10 shadow-sm p-4 md:p-4 flex flex-col gap-2"
             >
               <CardHeader className="p-0">
                 <div className="flex items-center gap-3">
@@ -88,7 +85,7 @@ export default function CourseIdClient({
                 </CardDescription>
 
                 {/* Upgraded iframe container to utilize responsive aspect ratios instead of rigid pixel properties */}
-                <div className="aspect-video w-full rounded-xl overflow-hidden border border-[#1C1C1C]/5 shadow-inner bg-[#FAFAF8]">
+                <div className="aspect-video w-3/4 rounded-xl overflow-hidden border border-[#1C1C1C]/5 shadow-inner bg-[#FAFAF8]">
                   <iframe
                     className="w-full h-full"
                     src={toYouTubeEmbed(lesson.lesson_video_url || "")}
@@ -120,16 +117,13 @@ export default function CourseIdClient({
         <div className="lg:col-span-1 lg:sticky lg:top-24">
           {/* Dropped green/5 and dark mode border structures for clear warm-bordered aesthetics */}
           <div className="bg-white rounded-2xl border border-[#F97316]/15 p-6 shadow-sm min-h-[70vh] flex flex-col">
-            
             <div className="border-b border-[#1C1C1C]/5 pb-4 mb-5">
               <div className="flex items-center gap-2 text-[#F97316] mb-1">
                 <Sparkles className="w-4 h-4" fill="currentColor" />
-                <span className="text-xs font-bold tracking-wide uppercase">LMS Widget Simulator</span>
+                <span className="text-xs font-bold tracking-wide uppercase">
+                  LMS Ai Tutor:Aria
+                </span>
               </div>
-              <h2 className="text-xl font-bold text-[#1C1C1C]">Cognora interactive view</h2>
-              <p className="text-sm text-[#1C1C1C]/60 font-medium mt-1">
-                Your students can seamlessly interact here using English, Hindi, or Nepali text.
-              </p>
             </div>
 
             {/* Dynamic Interactive Engine Bracket */}
@@ -148,17 +142,18 @@ export default function CourseIdClient({
                   <div className="w-12 h-12 rounded-full bg-[#F97316]/10 flex items-center justify-center text-[#F97316] mb-4">
                     <Sparkles className="w-6 h-6" />
                   </div>
-                  <p className="text-sm font-bold text-[#1C1C1C]">No active tutoring session</p>
-                  <p className="text-xs text-[#1C1C1C]/60 max-w-55 mt-1 leading-relaxed">
-                    Select a lesson sequence on the left to wake up the live AI preview.
+                  <p className="text-sm font-bold text-[#1C1C1C]">
+                    No active tutoring session
+                  </p>
+                  <p className="text-xs text-black max-w-55 mt-1 leading-relaxed">
+                    Select a lesson sequence on the left to wake up the live AI
+                    preview.
                   </p>
                 </div>
               )}
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );

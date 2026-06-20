@@ -114,23 +114,25 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }: { token: JWT; user: User | undefined }) {
-      // On initial sign in, populate token with user data
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name || "";
-        token.image = user.image || undefined;
+  // On initial sign in, populate token with user data
+  if (user) {
+    token.id = user.id;
+    token.email = user.email;
+    token.name = user.name || "";
+    token.image = user.image || undefined;
+  }
 
-        // Fetch organization data for both credentials and OAuth users
-        const orgData = await enrichUserWithOrg(user.email!);
-        if (orgData) {
-          token.activeOrgId = String(orgData.activeOrgId);
-          token.role = orgData.role;
-        }
-      }
+  // Fetch org data if missing (covers existing sessions + initial sign-in)
+  if (token.email && !token.activeOrgId) {
+    const orgData = await enrichUserWithOrg(token.email as string);
+    if (orgData) {
+      token.activeOrgId = String(orgData.activeOrgId);
+      token.role = orgData.role;
+    }
+  }
 
-      return token;
-    },
+  return token;
+},
 
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user && token.id) {

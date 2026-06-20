@@ -82,7 +82,7 @@ export default  function LessonClientForm({ courses }: { courses: Course[] }) {
         {/* Lesson Description Input */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-bold text-[#1C1C1C]/60 tracking-wide uppercase">
-            Lesson summary
+            Lesson Description
           </label>
           <textarea
             name="description"

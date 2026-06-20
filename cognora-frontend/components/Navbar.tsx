@@ -5,7 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 export default function Navbar() {
   return (
-   <nav className="bg-[#FAFAF8] border-b border-[#1C1C1C]/5 px-6 py-4">
+   <nav className="bg-[#FAFAF8] border-b border-[#1C1C1C]/5 px-6 py-4 ">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Left Side: Brand & Main Navigation */}
@@ -37,10 +37,10 @@ export default function Navbar() {
         </div>
 
         {/* Right Side: Auth & User Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 cursor-pointer">
           <Show when="signed-out">
             {/* Note: Ensure your SignInButton inherits or uses a rounded-2xl CTA style (e.g. bg-[#F97316] text-white px-6 py-2.5 rounded-2xl font-medium) */}
-            <SignInButton />
+            <SignInButton  />
           </Show>
 
           <Show when="signed-in">

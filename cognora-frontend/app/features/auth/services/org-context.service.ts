@@ -12,7 +12,14 @@ const getCachedSession = cache(async () => auth());
 export async function getActiveOrgContext(): Promise<ActiveOrgContext | null> {
   const session = await getCachedSession();
 
+  console.log("DEBUG session:", JSON.stringify(session, null, 2));
+
   if (!session?.user?.id || !session?.user?.activeOrgId) {
+    console.log("DEBUG missing:", { 
+      hasSession: !!session, 
+      userId: session?.user?.id, 
+      activeOrgId: session?.user?.activeOrgId 
+    });
     return null;
   }
 

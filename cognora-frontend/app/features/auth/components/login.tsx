@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { Home, Loader2 } from "lucide-react";
-
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { loginSchema, type LoginInput } from "../types/auth.types";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
