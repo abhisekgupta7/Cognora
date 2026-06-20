@@ -9,7 +9,7 @@ load_dotenv()
 
 def get_embedding_model():
     return GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004",
+        model="text-embedding-004",
         google_api_key=os.getenv("GOOGLE_API_KEY"),
     )
 def get_llm():
