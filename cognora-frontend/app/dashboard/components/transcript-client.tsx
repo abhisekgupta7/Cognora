@@ -24,9 +24,13 @@ export default function TranscriptClient({
     const data = await response.json();
 
     if (response.ok && data.status === "success") {
-      toast.success("Transcript initiated successfully!");
+      toast.success("Transcript initiated successfully!", {
+        position: "top-center",
+      });
     } else {
-      toast.error("Failed to initiate transcript.");
+      toast.error("Failed to initiate transcript.", {
+        position: "top-center",
+      });
     }
   };
   return (

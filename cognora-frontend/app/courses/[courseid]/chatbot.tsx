@@ -41,11 +41,18 @@ export default function Chatbot({
 
     if (!response.ok) {
       console.error("Chat API error:", response.status, data);
-      toast.error("Failed to get response from AI tutor. Please try again.");
+      toast.error("Failed to get response from AI tutor. Please try again.", {
+        position: "top-center",
+      });
+      
       return;
     }
+    toast.success("AI tutor responded successfully!", {
+      position: "top-center",
+    });
 
     console.log("Chat response:", data);
+
   };
   return (
     <div className="flex flex-col h-full bg-[#FAFAF8] text-[#1C1C1C] rounded-xl overflow-hidden">
