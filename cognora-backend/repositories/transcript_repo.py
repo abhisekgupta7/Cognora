@@ -54,21 +54,20 @@ class TranscriptRepository:
                 UPDATE transcripts
                 SET translated_transcript = %s
                 WHERE lesson_id = %s AND org_id = %s
+                RETURNING id
+
                 """
         self.cursor.execute(
             query,
                 (translated_transcript, lesson_id, org_id)
             )
         conn.commit()
-        self.cursor.execute(
-            """
-                SELECT id
-                FROM transcripts
-                WHERE lesson_id = %s AND org_id = %s
-            """,
-            (lesson_id, org_id)
-        )
-        return self.cursor.fetchone()[0]
+        row = self.cursor.fetchone()
+        if row is None:
+            raise Exception(f"No transcript found for lesson_id={lesson_id}, org_id={org_id}")
+        
+        return row["id"]
+
 
     def get_video_url(self, lesson_id: int,org_id: int) -> str:
         video_url=self.cursor.execute(
