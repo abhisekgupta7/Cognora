@@ -12,6 +12,7 @@ export default function TranscriptClient({
   orgId: number;
 }) {
   const handleTranscriptInitiation = async (courseId: string) => {
+    toast.loading("Initiating transcript generation...");
     const response = await fetch("/api/transcript", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -23,10 +24,8 @@ export default function TranscriptClient({
     const data = await response.json();
 
     if (response.ok && data.status === "success") {
-      console.log("Transcript initiated successfully:", data);
       toast.success("Transcript initiated successfully!");
     } else {
-      console.error("Failed to initiate transcript:", data);
       toast.error("Failed to initiate transcript.");
     }
   };
