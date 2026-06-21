@@ -71,9 +71,16 @@ class TranscriptService:
         # Fallback to Whisper
         audio_file_path = YoutubeService.extract_audio_from_video(video_url)
         nepali_transcript = WhisperService.generate_transcript_from_audio(audio_file_path)
-        if nepali_transcript:
-            TranscriptRepository().save_original_transcript(lesson_id, org_id, nepali_transcript, "ne")
+        
+        if not nepali_transcript:
+            raise Exception(f"Whisper returned empty transcript for lesson {lesson_id}")
+        
+        TranscriptRepository().save_original_transcript(lesson_id, org_id, nepali_transcript, "ne")
         english_transcripted_text = LanguageService().handle("ne", nepali_transcript)
+        
+        if not english_transcripted_text:
+            raise Exception(f"LLM returned empty translation for lesson {lesson_id}")
+        
         translated_transcript_id = TranscriptRepository().save_translated_transcript(lesson_id, org_id, english_transcripted_text)
         print("Translated transcript:", translated_transcript_id)
         return {"transcript": english_transcripted_text, "id": translated_transcript_id, "language": "en"}
