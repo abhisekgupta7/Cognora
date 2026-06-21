@@ -23,9 +23,14 @@ class YoutubeService:
     
     def extract_audio_from_video(video_url):
         video_id = video_url.split("v=")[-1].split("&")[0]
-        clean_url = f"https://www.youtube.com/watch?v={video_id}"  # add this
+        clean_url = f"https://www.youtube.com/watch?v={video_id}"
         
-        existing = glob.glob(f'downloads/audio/{video_id}.*')
+        search_path = f'downloads/audio/{video_id}.*'
+        print(f"Looking for: {search_path}")
+        print(f"CWD: {os.getcwd()}")
+        existing = glob.glob(search_path)
+        print(f"Found: {existing}")
+        
         if existing:
             print(f"Audio file already exists: {existing[0]}")
             return existing[0]
