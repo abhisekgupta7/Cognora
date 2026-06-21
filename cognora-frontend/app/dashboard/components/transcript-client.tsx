@@ -12,22 +12,42 @@ export default function TranscriptClient({
   orgId: number;
 }) {
   const handleTranscriptInitiation = async (courseId: string) => {
-    toast.loading("Initiating transcript generation...");
-    const response = await fetch("/api/transcript", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        course_id: courseId,
-        org_id: orgId,
-      }),
+    const toastId = toast.loading("Initiating transcript generation...", {
+      position: "top-center",
     });
-    const data = await response.json();
 
-    if (response.ok) {
-  toast.success("Transcript initiated successfully!", { position: "top-center" });
-} else {
-  toast.error("Failed to initiate transcript.");
-}
+    try {
+      const response = await fetch("/api/transcript", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          course_id: courseId,
+          org_id: orgId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Transcript job queued! Processing in background.", {
+          id: toastId,
+          position: "top-center",
+          description: "This may take a few minutes depending on video length.",
+          duration: 5000,
+        });
+      } else {
+        toast.error("Failed to initiate transcript.", {
+          id: toastId,
+          position: "top-center",
+          description: data?.error || "Please try again.",
+        });
+      }
+    } catch (err) {
+      toast.error("Network error. Please check your connection.", {
+        id: toastId,
+        position: "top-center",
+      });
+    }
   };
   return (
     <div className="w-full text-[#1C1C1C]">
