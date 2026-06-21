@@ -1,5 +1,5 @@
 import os
-import psycopg
+import psycopg_pool
 from psycopg.rows import dict_row
 from dotenv import load_dotenv
 
@@ -7,12 +7,12 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Create ONE shared connection
-conn = psycopg.connect(
+pool = psycopg_pool.ConnectionPool(
     DATABASE_URL,
-     autocommit=True,
-     row_factory=dict_row
-     )
+    min_size=1,
+    max_size=10,
+    kwargs={"row_factory": dict_row, "autocommit": True}
+)
 
 def get_conn():
-    return conn
+    return pool.connection()
