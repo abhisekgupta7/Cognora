@@ -2,15 +2,7 @@
 import { Lesson } from "@/app/features/courses/types/lesson";
 import Chatbot from "./chatbot";
 import { useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Video } from "lucide-react";
+import { Sparkles, Video, MessageCircle } from "lucide-react";
 
 export default function CourseIdClient({
   courseId,
@@ -21,25 +13,20 @@ export default function CourseIdClient({
   orgId: number;
   lessons: Lesson[];
 }) {
-  const [showChatbot, setShowChatbot] = useState(false);
-  const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(
+    lessons[0] || null
+  );
+  const [activeTab, setActiveTab] = useState<"video" | "ai">("video");
 
   function toYouTubeEmbed(url: string) {
     try {
       const u = new URL(url);
-
-      // case 1: watch?v=
       if (u.hostname.includes("youtube.com") && u.searchParams.get("v")) {
-        const id = u.searchParams.get("v");
-        return `https://www.youtube.com/embed/${id}`;
+        return `https://www.youtube.com/embed/${u.searchParams.get("v")}`;
       }
-
-      // case 2: youtu.be short link
       if (u.hostname === "youtu.be") {
-        const id = u.pathname.slice(1);
-        return `https://www.youtube.com/embed/${id}`;
+        return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
       }
-
       return url;
     } catch {
       return url;
@@ -47,112 +34,121 @@ export default function CourseIdClient({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 text-[#1C1C1C]">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* LEFT: LECTURES / LESSON TRACK */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Branded Section Header in Sentence Case */}
-          <div className="mb-1">
-            <span className="text-xs font-bold tracking-wider text-[#F97316] bg-[#F97316]/10 px-3 py-1 rounded-full inline-block">
-              Course workspace
-            </span>
-            <h1 className="text-3xl font-bold tracking-tight mt-3">
-              Reviewing curriculum for{" "}
-              <span className="text-[#F97316]">Course {courseId}</span>
-            </h1>
-            <p className="text-[#1C1C1C]/70 font-bold text-2xl m-3">Lessons: </p>
-          </div>
-
-          {lessons.map((lesson) => (
-            <Card
+    <div className="flex h-[calc(100vh-64px)] bg-[#FAFAF8] text-[#1C1C1C]">
+      
+      {/* LEFT: Lesson List */}
+      <div className="w-80 border-r border-[#1C1C1C]/5 bg-white flex flex-col overflow-y-auto shrink-0">
+        <div className="p-4 border-b border-[#1C1C1C]/5">
+          <h2 className="font-bold text-sm text-[#1C1C1C]/50 uppercase tracking-wider">
+            Course Content
+          </h2>
+        </div>
+        <div className="flex flex-col">
+          {lessons.map((lesson, index) => (
+            <button
               key={lesson.id}
-              className="bg-white rounded-2xl border border-[#F97316]/10 shadow-sm p-4 md:p-4 flex flex-col gap-2"
+              onClick={() => setSelectedLesson(lesson)}
+              className={`text-left px-4 py-4 border-b border-[#1C1C1C]/5 flex items-start gap-3 transition-colors cursor-pointer ${
+                selectedLesson?.id === lesson.id
+                  ? "bg-[#F97316]/10 border-l-2 border-l-[#F97316]"
+                  : "hover:bg-[#FAFAF8]"
+              }`}
             >
-              <CardHeader className="p-0">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#FAFAF8] border border-[#1C1C1C]/5 flex items-center justify-center text-[#F97316]">
-                    <Video className="w-5 h-5" strokeWidth={2.2} />
-                  </div>
-                  <CardTitle className="text-xl font-bold text-[#1C1C1C]">
-                    {lesson.name}
-                  </CardTitle>
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-0 space-y-5">
-                <CardDescription className="text-[#1C1C1C]/70 font-medium leading-relaxed">
-                  {lesson.description}
-                </CardDescription>
-
-                {/* Upgraded iframe container to utilize responsive aspect ratios instead of rigid pixel properties */}
-                <div className="aspect-video w-3/4 rounded-xl overflow-hidden border border-[#1C1C1C]/5 shadow-inner bg-[#FAFAF8]">
-                  <iframe
-                    className="w-full h-full"
-                    src={toYouTubeEmbed(lesson.lesson_video_url || "")}
-                    title={lesson.name}
-                    allowFullScreen
-                  />
-                </div>
-              </CardContent>
-
-              {/* Clean, individual action selector */}
-              <div className="pt-2">
-                <Button
-                  onClick={() => {
-                    setShowChatbot(true);
-                    setSelectedLessonId(lesson.id.toString());
-                  }}
-                  variant="outline"
-                  className="h-11 px-5 rounded-xl border border-[#F97316]/20 text-[#1C1C1C] font-medium bg-white hover:bg-[#F97316] hover:text-white transition-all flex items-center gap-2 text-sm cursor-pointer"
-                >
-                  <span>Test AI tutor for this lesson</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
+              <div className="w-6 h-6 rounded-full bg-[#F97316]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <Video className="w-3 h-3 text-[#F97316]" />
               </div>
-            </Card>
+              <div>
+                <p className="text-xs text-[#1C1C1C]/50 mb-0.5">
+                  Lesson {index + 1}
+                </p>
+                <p className="text-sm font-medium text-[#1C1C1C] leading-snug">
+                  {lesson.name}
+                </p>
+              </div>
+            </button>
           ))}
         </div>
+      </div>
 
-        {/* RIGHT: LIVE COGNORA WIDGET SIMULATION */}
-        <div className="lg:col-span-1 lg:sticky lg:top-24">
-          {/* Dropped green/5 and dark mode border structures for clear warm-bordered aesthetics */}
-          <div className="bg-white rounded-2xl border border-[#F97316]/15 p-6 shadow-sm min-h-[70vh] flex flex-col">
-            <div className="border-b border-[#1C1C1C]/5 pb-4 mb-5">
-              <div className="flex items-center gap-2 text-[#F97316] mb-1">
-                <Sparkles className="w-4 h-4" fill="currentColor" />
-                <span className="text-xs font-bold tracking-wide uppercase">
-                  LMS Ai Tutor:Aria
-                </span>
-              </div>
-            </div>
+      {/* RIGHT: Video + AI Toggle */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Tabs */}
+        <div className="flex border-b border-[#1C1C1C]/5 bg-white">
+          <button
+            onClick={() => setActiveTab("video")}
+            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors cursor-pointer ${
+              activeTab === "video"
+                ? "border-b-2 border-[#F97316] text-[#F97316]"
+                : "text-[#1C1C1C]/50 hover:text-[#1C1C1C]"
+            }`}
+          >
+            <Video className="w-4 h-4" />
+            Video
+          </button>
+          <button
+            onClick={() => setActiveTab("ai")}
+            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors cursor-pointer ${
+              activeTab === "ai"
+                ? "border-b-2 border-[#F97316] text-[#F97316]"
+                : "text-[#1C1C1C]/50 hover:text-[#1C1C1C]"
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            AI Tutor
+          </button>
+        </div>
 
-            {/* Dynamic Interactive Engine Bracket */}
-            <div className="grow flex flex-col justify-between">
-              {showChatbot ? (
-                <div className="grow rounded-xl border border-[#1C1C1C]/5 bg-[#FAFAF8] p-2 h-full min-h-112.5">
-                  <Chatbot
-                    courseId={courseId}
-                    lessonId={selectedLessonId || ""}
-                    orgId={orgId}
-                  />
-                </div>
-              ) : (
-                // Added an intentional placeholder empty state so the layout does not look broken when initialized
-                <div className="grow flex flex-col items-center justify-center text-center p-6 bg-[#FAFAF8]/50 rounded-xl border border-dashed border-[#1C1C1C]/10 min-h-87.5">
-                  <div className="w-12 h-12 rounded-full bg-[#F97316]/10 flex items-center justify-center text-[#F97316] mb-4">
-                    <Sparkles className="w-6 h-6" />
+        {/* Content Area */}
+        <div className="flex-1 overflow-hidden">
+          {activeTab === "video" ? (
+            <div className="flex flex-col h-full">
+              {selectedLesson ? (
+                <>
+                  <div className="aspect-video w-full bg-black">
+                    <iframe
+                      className="w-full h-full"
+                      src={toYouTubeEmbed(selectedLesson.lesson_video_url || "")}
+                      title={selectedLesson.name}
+                      allowFullScreen
+                    />
                   </div>
-                  <p className="text-sm font-bold text-[#1C1C1C]">
-                    No active tutoring session
-                  </p>
-                  <p className="text-xs text-black max-w-55 mt-1 leading-relaxed">
-                    Select a lesson sequence on the left to wake up the live AI
-                    preview.
-                  </p>
+                  <div className="p-6">
+                    <h1 className="text-2xl font-bold text-[#1C1C1C]">
+                      {selectedLesson.name}
+                    </h1>
+                    <p className="text-[#1C1C1C]/60 mt-2 font-medium">
+                      {selectedLesson.description}
+                    </p>
+                    <button
+                      onClick={() => setActiveTab("ai")}
+                      className="mt-4 flex items-center gap-2 bg-[#F97316] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#F97316]/90 transition-colors cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      Ask AI Tutor about this lesson
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-full text-[#1C1C1C]/40">
+                  Select a lesson to start
                 </div>
               )}
             </div>
-          </div>
+          ) : (
+            <div className="h-full">
+              {selectedLesson ? (
+                <Chatbot
+                  courseId={courseId}
+                  lessonId={selectedLesson.id.toString()}
+                  orgId={orgId}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-[#1C1C1C]/40">
+                  Select a lesson first
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
