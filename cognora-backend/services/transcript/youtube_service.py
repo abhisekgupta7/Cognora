@@ -20,10 +20,11 @@ PROXIES = [
 ]
 
 class YoutubeService:
+    
     def extract_audio_from_video(video_url):
         video_id = video_url.split("v=")[-1].split("&")[0]
-
-        # If file already exists (manually uploaded), skip download
+        clean_url = f"https://www.youtube.com/watch?v={video_id}"  # add this
+        
         existing = glob.glob(f'downloads/audio/{video_id}.*')
         if existing:
             print(f"Audio file already exists: {existing[0]}")
@@ -44,7 +45,7 @@ class YoutubeService:
             try:
                 print(f"Trying proxy {host}:{port}...")
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([video_url])
+                    ydl.download([clean_url])
                 files = glob.glob(f'downloads/audio/{video_id}.*')
                 if files:
                     print(f"Audio saved: {files[0]}")

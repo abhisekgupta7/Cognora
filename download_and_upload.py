@@ -9,34 +9,31 @@ EC2_KEY = "C:\\Users\\Abish\\Downloads\\cognora-key.pem"  # update this
 EC2_PATH = "/home/ec2-user/Cognora/cognora-backend/downloads/audio/"
 
 LESSONS = [
-    {"id": "1bb8fae4-3cc4-4f1f-beb1-d2b7f05650ee", "url": "https://www.youtube.com/watch?v=xfwGbu3yZVk"},
-    {"id": "601f6913-9c88-4978-9c50-6a96145b2399", "url": "https://www.youtube.com/watch?v=7iHyOXT5dM4"},
-    {"id": "2fd86426-21ae-4bf8-ba28-6a4eb29891ca", "url": "https://www.youtube.com/watch?v=jNXg2p5r68A"},
+    {"id": "1288ef74-2819-489f-8e36-1623cff50ce5", "url": "https://www.youtube.com/watch?v=FZy_wJnyTug"},
+    {"id": "17a66824-af40-401c-ae16-079f53f9077e", "url": "https://www.youtube.com/watch?v=FlDZ-XDj8A4"},
+    {"id": "c8b17a28-f16f-4906-bdaf-fdd6eabd346b", "url": "https://www.youtube.com/watch?v=QYnyh3yJBP0"},
 ]
 
 def get_video_id(url):
     return url.split("v=")[-1].split("&")[0]
 
 def download_audio(url, video_id):
-    # Check if already downloaded (any format)
+    clean_url = f"https://www.youtube.com/watch?v={video_id}"
     existing = glob.glob(f"{video_id}.*")
     if existing:
         print(f"Already downloaded: {existing[0]}")
         return existing[0]
 
-    print(f"Downloading {url}...")
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': f'{video_id}.%(ext)s',
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+        ydl.download([clean_url])  # clean URL
 
     files = glob.glob(f"{video_id}.*")
     if not files:
         raise Exception(f"Download failed for {url}")
-    
-    print(f"Downloaded: {files[0]}")
     return files[0]
 
 def upload_to_ec2(file_path):
