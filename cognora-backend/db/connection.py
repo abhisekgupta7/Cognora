@@ -11,8 +11,12 @@ pool = psycopg_pool.ConnectionPool(
     DATABASE_URL,
     min_size=1,
     max_size=10,
-    kwargs={"row_factory": dict_row, "autocommit": True}
+    reconnect_timeout=30,
+    kwargs={"row_factory": dict_row, "autocommit": True},
+    open=True,
 )
+
+pool.check()
 
 def get_conn():
     return pool.connection()
