@@ -6,7 +6,12 @@ import { ClerkProvider } from "@clerk/nextjs";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <ClerkProvider>{children}</ClerkProvider>
+      <ClerkProvider
+        signInUrl="https://accounts.abhisekgupta7.com.np/sign-in"
+        signUpUrl="https://accounts.abhisekgupta7.com.np/sign-up"
+      >
+        {children}
+      </ClerkProvider>
     </SessionProvider>
   );
 }

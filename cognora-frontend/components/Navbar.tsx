@@ -21,7 +21,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           {!isSignedIn ? (
-            <SignInButton mode="modal">
+            <SignInButton>
               <button className="cursor-pointer bg-[#F97316] text-white px-6 py-2.5 rounded-2xl font-medium hover:bg-[#F97316]/90 transition-colors">
                 Sign In
               </button>
