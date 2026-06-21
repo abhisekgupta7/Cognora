@@ -43,19 +43,19 @@ def main():
                 cursor.execute(
                     """
                     UPDATE transcripts 
-                    SET original_transcript = %s, translated_transcript = %s, language = %s
+                    SET original_transcript = %s, language = %s
                     WHERE lesson_id = %s AND org_id = %s
                     """,
-                    (text, text, lesson["lang"], lesson["id"], lesson["org_id"])
+                    (text, lesson["lang"], lesson["id"], lesson["org_id"])
                 )
             else:
                 print(f"Inserting new transcript...")
                 cursor.execute(
                     """
-                    INSERT INTO transcripts (lesson_id, org_id, original_transcript, translated_transcript, language)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO transcripts (lesson_id, org_id, original_transcript, language)
+                    VALUES (%s, %s, %s, %s)
                     """,
-                    (lesson["id"], lesson["org_id"], text, text, lesson["lang"])
+                    (lesson["id"], lesson["org_id"], text, lesson["lang"])
                 )
 
             print(f"Saved transcript for lesson {lesson['id']}")
@@ -67,11 +67,11 @@ def main():
                 text = " ".join(t.text for t in transcript)
                 cursor.execute(
                     """
-                    INSERT INTO transcripts (lesson_id, org_id, original_transcript, translated_transcript, language)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO transcripts (lesson_id, org_id, original_transcript, language)
+                    VALUES (%s, %s, %s, %s)
                     ON CONFLICT DO NOTHING
                     """,
-                    (lesson["id"], lesson["org_id"], text, text, "en")
+                    (lesson["id"], lesson["org_id"], text, "en")
                 )
                 print(f"Saved English transcript for lesson {lesson['id']}")
             except Exception as e:

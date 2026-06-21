@@ -5,6 +5,16 @@ class TranscriptRepository:
     def transcript_exists(self, lesson_id: int, org_id: int) -> bool:
         query = """
             SELECT 1 FROM transcripts
+            WHERE lesson_id = %s AND org_id = %s
+        """
+        with get_conn() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (lesson_id, org_id))
+                return cursor.fetchone() is not None
+
+    def is_translated(self, lesson_id: int, org_id: int) -> bool:
+        query = """
+            SELECT 1 FROM transcripts
             WHERE lesson_id = %s AND org_id = %s AND translated_transcript IS NOT NULL
         """
         with get_conn() as conn:
@@ -27,6 +37,7 @@ class TranscriptRepository:
                 return {
                     "id": row["id"],
                     "transcript": row["translated_transcript"],
+                    "original": row["original_transcript"],
                     "language": row["language"],
                 }
 

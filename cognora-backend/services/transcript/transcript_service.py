@@ -39,11 +39,17 @@ def get_proxy_config():
 
 class TranscriptService:
 
-    def get_or_create_transcript(self, video_url: str, org_id: int, lesson_id: str):
-        if TranscriptRepository().transcript_exists(lesson_id, org_id):
+   def get_or_create_transcript(self, video_url: str, org_id: int, lesson_id: str):
+    if TranscriptRepository().transcript_exists(lesson_id, org_id):
+        if TranscriptRepository().is_translated(lesson_id, org_id):
             print(f"Transcript already exists for lesson {lesson_id}")
             return TranscriptRepository().get_transcript(lesson_id, org_id)
-
+        else:
+            print(f"Translating existing transcript for lesson {lesson_id}")
+            row = TranscriptRepository().get_transcript(lesson_id, org_id)
+            text = LanguageService().handle(row["language"], row["original"])
+            translated_transcript_id = TranscriptRepository().save_translated_transcript(lesson_id, org_id, text)
+            return {"transcript": text, "id": translated_transcript_id, "language": "en"}
         print(f"Creating transcript for lesson {lesson_id}")
         video_id = self.extract_video_id(video_url)
 
