@@ -20,7 +20,7 @@ def get_llm():
     )
 
 def whisper_model():
-    return WhisperModel("small", device="cpu", compute_type="int8")
+    return WhisperModel("base", device="cpu", compute_type="int8")
 
 # Initializations
 llm = get_llm()

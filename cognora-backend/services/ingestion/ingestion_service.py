@@ -14,12 +14,15 @@ class IngestionService:
             "success": True,
         }
     
-    def ingest_lesson(self,lesson):
-        transcript=TranscriptService().get_or_create_transcript(lesson["lesson_video_url"], lesson["org_id"], lesson["id"])
+    def ingest_lesson(self, lesson):
+        transcript = TranscriptService().get_or_create_transcript(
+            lesson["lesson_video_url"], lesson["org_id"], lesson["id"]
+        )
 
         print(type(transcript))
-        print(transcript) # Debugging line to check the transcript content
-        if not transcript["transcript"]:
+        print(transcript)
+
+        if not transcript or not transcript.get("transcript"):
             print(f"Failed to get or create translated transcript for lesson {lesson['id']}")
             return
 
