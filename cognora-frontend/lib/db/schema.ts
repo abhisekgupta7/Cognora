@@ -118,6 +118,7 @@ export const lessons = pgTable("lessons", {
   name: varchar("name", { length: 256 }).notNull(),
   description: varchar("description", { length: 1000 }),
   lesson_video_url: varchar("lesson_video_url", { length: 256 }),
+  quiz: jsonb("quiz"),
   created_at: timestamp("created_at").default(new Date()),
   updated_at: timestamp("updated_at").default(new Date()),
 });
@@ -131,8 +132,8 @@ export const transcripts = pgTable("transcripts", {
     .notNull()
     .references(() => organizations.id),
 
-  original_transcript: varchar("original_transcript", { length: 10000 }),
-  translated_transcript: varchar("translated_transcript", { length: 10000 }),
+  original_transcript: text("original_transcript"),
+  translated_transcript: text("translated_transcript"),
   language: varchar("language", { length: 50 }),
   created_at: timestamp("created_at").default(new Date()),
   updated_at: timestamp("updated_at").default(new Date()),

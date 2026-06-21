@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.chat import chat_router
 from api.ingestion import Ingest_router
+from api.quiz import Quiz_router
 
 app = FastAPI()
 origins = [
@@ -20,3 +21,4 @@ app.add_middleware(
 
 app.include_router(chat_router,prefix="/chat",tags=["chat"])
 app.include_router(Ingest_router,prefix="/ingestion",tags=["ingestion"])
+app.include_router(Quiz_router,prefix="/quiz",tags=["quiz"])

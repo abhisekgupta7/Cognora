@@ -1,8 +1,9 @@
 "use client";
 import { Lesson } from "@/app/features/courses/types/lesson";
 import Chatbot from "./chatbot";
+import QuizPage from "./quiz";
 import { useState } from "react";
-import { Sparkles, Video, MessageCircle } from "lucide-react";
+import { Sparkles, Video, BookOpen } from "lucide-react";
 
 export default function CourseIdClient({
   courseId,
@@ -13,35 +14,32 @@ export default function CourseIdClient({
   orgId: number;
   lessons: Lesson[];
 }) {
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(
-    lessons[0] || null
-  );
-  const [activeTab, setActiveTab] = useState<"video" | "ai">("video");
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(lessons[0] || null);
+  const [activeTab, setActiveTab] = useState<"video" | "ai" | "quiz">("video");
 
   function toYouTubeEmbed(url: string) {
     try {
       const u = new URL(url);
-      if (u.hostname.includes("youtube.com") && u.searchParams.get("v")) {
+      if (u.hostname.includes("youtube.com") && u.searchParams.get("v"))
         return `https://www.youtube.com/embed/${u.searchParams.get("v")}`;
-      }
-      if (u.hostname === "youtu.be") {
+      if (u.hostname === "youtu.be")
         return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
-      }
       return url;
-    } catch {
-      return url;
-    }
+    } catch { return url; }
   }
+
+  const tabs = [
+    { key: "video", label: "Video", icon: Video },
+    { key: "ai",    label: "AI Tutor", icon: Sparkles },
+    { key: "quiz",  label: "Quiz", icon: BookOpen },
+  ] as const;
 
   return (
     <div className="flex h-[calc(100vh-64px)] bg-[#FAFAF8] text-[#1C1C1C]">
-      
       {/* LEFT: Lesson List */}
       <div className="w-80 border-r border-[#1C1C1C]/5 bg-white flex flex-col overflow-y-auto shrink-0">
         <div className="p-4 border-b border-[#1C1C1C]/5">
-          <h2 className="font-bold text-sm text-[#1C1C1C]/50 uppercase tracking-wider">
-            Course Content
-          </h2>
+          <h2 className="font-bold text-sm text-[#1C1C1C]/50 uppercase tracking-wider">Course Content</h2>
         </div>
         <div className="flex flex-col">
           {lessons.map((lesson, index) => (
@@ -58,53 +56,41 @@ export default function CourseIdClient({
                 <Video className="w-3 h-3 text-[#F97316]" />
               </div>
               <div>
-                <p className="text-xs text-[#1C1C1C]/50 mb-0.5">
-                  Lesson {index + 1}
-                </p>
-                <p className="text-sm font-medium text-[#1C1C1C] leading-snug">
-                  {lesson.name}
-                </p>
+                <p className="text-xs text-[#1C1C1C]/50 mb-0.5">Lesson {index + 1}</p>
+                <p className="text-sm font-medium text-[#1C1C1C] leading-snug">{lesson.name}</p>
               </div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* RIGHT: Video + AI Toggle */}
+      {/* RIGHT */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Tabs */}
         <div className="flex border-b border-[#1C1C1C]/5 bg-white">
-          <button
-            onClick={() => setActiveTab("video")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors cursor-pointer ${
-              activeTab === "video"
-                ? "border-b-2 border-[#F97316] text-[#F97316]"
-                : "text-[#1C1C1C]/50 hover:text-[#1C1C1C]"
-            }`}
-          >
-            <Video className="w-4 h-4" />
-            Video
-          </button>
-          <button
-            onClick={() => setActiveTab("ai")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors cursor-pointer ${
-              activeTab === "ai"
-                ? "border-b-2 border-[#F97316] text-[#F97316]"
-                : "text-[#1C1C1C]/50 hover:text-[#1C1C1C]"
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            AI Tutor
-          </button>
+          {tabs.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors cursor-pointer ${
+                activeTab === key
+                  ? "border-b-2 border-[#F97316] text-[#F97316]"
+                  : "text-[#1C1C1C]/50 hover:text-[#1C1C1C]"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
         </div>
 
-        {/* Content Area */}
+        {/* Content */}
         <div className="flex-1 overflow-hidden">
-          {activeTab === "video" ? (
-            <div className="flex flex-col h-full">
+          {activeTab === "video" && (
+            <div className="flex flex-col h-full overflow-y-auto">
               {selectedLesson ? (
                 <>
-                  <div className="aspect-video w-full bg-black">
+                  <div className="aspect-video w-full bg-black shrink-0">
                     <iframe
                       className="w-full h-full"
                       src={toYouTubeEmbed(selectedLesson.lesson_video_url || "")}
@@ -113,19 +99,24 @@ export default function CourseIdClient({
                     />
                   </div>
                   <div className="p-6">
-                    <h1 className="text-2xl font-bold text-[#1C1C1C]">
-                      {selectedLesson.name}
-                    </h1>
-                    <p className="text-[#1C1C1C]/60 mt-2 font-medium">
-                      {selectedLesson.description}
-                    </p>
-                    <button
-                      onClick={() => setActiveTab("ai")}
-                      className="mt-4 flex items-center gap-2 bg-[#F97316] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#F97316]/90 transition-colors cursor-pointer"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                      Ask AI Tutor about this lesson
-                    </button>
+                    <h1 className="text-2xl font-bold text-[#1C1C1C]">{selectedLesson.name}</h1>
+                    <p className="text-[#1C1C1C]/60 mt-2 font-medium">{selectedLesson.description}</p>
+                    <div className="flex gap-3 mt-4">
+                      <button
+                        onClick={() => setActiveTab("ai")}
+                        className="flex items-center gap-2 bg-[#F97316] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#F97316]/90 transition-colors"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        Ask AI Tutor
+                      </button>
+                      <button
+                        onClick={() => setActiveTab("quiz")}
+                        className="flex items-center gap-2 border border-[#F97316] text-[#F97316] px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#F97316]/10 transition-colors"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        Take Quiz
+                      </button>
+                    </div>
                   </div>
                 </>
               ) : (
@@ -134,18 +125,24 @@ export default function CourseIdClient({
                 </div>
               )}
             </div>
-          ) : (
+          )}
+
+          {activeTab === "ai" && (
             <div className="h-full">
               {selectedLesson ? (
-                <Chatbot
-                  courseId={courseId}
-                  lessonId={selectedLesson.id.toString()}
-                  orgId={orgId}
-                />
+                <Chatbot courseId={courseId} lessonId={selectedLesson.id.toString()} orgId={orgId} />
               ) : (
-                <div className="flex items-center justify-center h-full text-[#1C1C1C]/40">
-                  Select a lesson first
-                </div>
+                <div className="flex items-center justify-center h-full text-[#1C1C1C]/40">Select a lesson first</div>
+              )}
+            </div>
+          )}
+
+          {activeTab === "quiz" && (
+            <div className="h-full overflow-y-auto">
+              {selectedLesson ? (
+                <QuizPage lessonId={selectedLesson.id.toString()} orgId={orgId} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-[#1C1C1C]/40">Select a lesson first</div>
               )}
             </div>
           )}

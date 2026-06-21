@@ -54,6 +54,8 @@ Instructions:
 QUIZ_GENERATION_PROMPT = """
 You are an expert educational content creator.
 Your task is to generate a quiz based on the provided lesson content.
+The context for the lesson i.e the transcript is provided below
+{transcript}
 
 Rules:
 1. Create 5 multiple-choice questions based on the lesson content.
