@@ -13,12 +13,9 @@ import { Course } from "../types/course";
 export const dynamic = "force-dynamic";
 
 export default async function CoursePage() {
-  let courses: Course[] = [];
-  try {
-    courses = await getAllCourses();
-  } catch (e) {
-    console.error("Failed to fetch courses:", e);
-  }
+ 
+   let courses = await getAllCourses();
+
 
   if (courses.length === 0) {
     return <div>No courses available.</div>;
