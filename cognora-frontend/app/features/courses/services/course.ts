@@ -22,8 +22,8 @@ export async function createCourserepo(courseData: {
     .returning();
   return course[0] as Course;
 }
-
 export async function getAllCourses(): Promise<Course[]> { 
   const allCourses = await db.select().from(courses);
+  console.log("getAllCourses result:", allCourses);
   return allCourses as Course[];
 }
