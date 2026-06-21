@@ -18,5 +18,5 @@ jobs:
           script: |
             cd /home/ec2-user/Cognora
             git pull origin main
-            export $(cat cognora-frontend/.env | grep NEXT_PUBLIC | xargs)
+            export $(cat cognora-frontend/.env | xargs)
             docker-compose up --build -d
