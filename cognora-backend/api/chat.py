@@ -1,16 +1,10 @@
 from fastapi import APIRouter
 from services.chat.chat_service import handle_chat
 from schemas.chat import ChatRequest
-from workers.job_queue import queue
+from fastapi.responses import StreamingResponse
 
 chat_router = APIRouter()
 
 @chat_router.post("/")
 async def chat(payload: ChatRequest):
-    print("Received chat request:", payload)
-    job = queue.enqueue(handle_chat, payload.dict())
-
-    return {
-        "job_id": job.id,
-        "status": "queued"
-    }
+    return StreamingResponse(handle_chat(payload.dict()), media_type="text/plain")

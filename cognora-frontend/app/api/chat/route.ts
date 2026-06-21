@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify(body),
   });
 
-  const data = await response.json();
-  return NextResponse.json(data, { status: response.status });
+  return new Response(response.body, {
+    headers: { "Content-Type": "text/plain" },
+  });
 }

@@ -1,5 +1,11 @@
-import { SendHorizontal, Sparkles } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
+
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
 
 export default function Chatbot({
   courseId,
@@ -10,23 +16,29 @@ export default function Chatbot({
   lessonId: string;
   orgId: number;
 }) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages update
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
     const question = formData.get("question") as string;
-    console.log("Question submitted:", question);
-    console.log(
-      "Calling API with courseId:",
-      courseId,
-      "lessonId:",
-      lessonId,
-      "orgId:",
-      orgId,
-    );
+    form.reset(); // clear input immediately
 
-    console.log("API URL:", process.env.NEXT_PUBLIC_FASTAPI_URL);
+    // Add user message
+    setMessages((prev) => [...prev, { role: "user", content: question }]);
+    // Add empty assistant message (will be filled by stream)
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+    setLoading(true);
 
-    const response = await fetch("/api/chat", {
+    const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -37,53 +49,91 @@ export default function Chatbot({
         org_id: orgId,
       }),
     });
-    const data = await response.json();
 
-    if (!response.ok) {
-      console.error("Chat API error:", response.status, data);
+    if (!res.ok) {
       toast.error("Failed to get response from AI tutor. Please try again.", {
         position: "top-center",
       });
-      
+      setMessages((prev) => prev.slice(0, -1)); // remove empty assistant message
+      setLoading(false);
       return;
     }
-    toast.success("AI tutor responded successfully!", {
-      position: "top-center",
-    });
 
-    console.log("Chat response:", data);
+    const reader = res.body!.getReader();
+    const decoder = new TextDecoder();
 
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const token = decoder.decode(value, { stream: true });
+      // Append each token to the last (assistant) message
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          role: "assistant",
+          content: updated[updated.length - 1].content + token,
+        };
+        return updated;
+      });
+    }
+
+    setLoading(false);
   };
+
   return (
     <div className="flex flex-col h-full bg-[#FAFAF8] text-[#1C1C1C] rounded-xl overflow-hidden">
-      {/* Scrollable Message Area (Empty state / Welcome prompt example) */}
-      <div className="grow p-4 flex flex-col justify-end overflow-y-auto min-h-75">
-        <div className="flex gap-3 max-w-[85%] mb-2">
-          <div className="bg-white border border-[#F97316]/10 rounded-2xl rounded-tl-none p-4 text-sm font-medium shadow-sm leading-relaxed">
-            Hi! I'm your AI tutor for this course. You can ask me questions
-            about the lessons, videos, or any course-related topic. Just type
-            your question in the box below and I'll do my best to help you out.
-            {/* Proudly emphasizing multilingual availability */}
+      {/* Message Area */}
+      <div className="grow p-4 flex flex-col overflow-y-auto min-h-75 gap-3">
+        {/* Welcome message */}
+        {messages.length === 0 && (
+          <div className="flex gap-3 max-w-[85%]">
+            <div className="bg-white border border-[#F97316]/10 rounded-2xl rounded-tl-none p-4 text-sm font-medium shadow-sm leading-relaxed">
+              Hi! I'm your AI tutor for this course. Ask me anything about the
+              lessons, videos, or course topics.
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Chat messages */}
+        {messages.map((msg, i) => (
+          <div
+            key={i}
+            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+          >
+            <div
+              className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed ${
+                msg.role === "user"
+                  ? "bg-[#F97316] text-white rounded-tr-none"
+                  : "bg-white border border-[#F97316]/10 shadow-sm rounded-tl-none"
+              }`}
+            >
+              {msg.content}
+              {/* Blinking cursor while streaming this message */}
+              {loading && i === messages.length - 1 && msg.role === "assistant" && (
+                <span className="inline-block w-0.5 h-3.5 bg-current ml-0.5 animate-pulse" />
+              )}
+            </div>
+          </div>
+        ))}
+
+        <div ref={bottomRef} />
       </div>
 
-      {/* Form & Multilingual Input Field Layout */}
+      {/* Input */}
       <div className="p-4 bg-white border-t border-[#1C1C1C]/5">
         <form onSubmit={handleSubmit} className="relative flex items-center">
           <input
             type="text"
             name="question"
             required
-            // Multi-language placeholder display
-            placeholder="Ask your questions... "
-            className="w-full h-12 pl-4 pr-14 bg-[#FAFAF8] border border-[#1C1C1C]/10 rounded-xl font-medium text-sm text-[#1C1C1C] placeholder-[#1C1C1C]/40 focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition-all"
+            disabled={loading}
+            placeholder="Ask your questions..."
+            className="w-full h-12 pl-4 pr-14 bg-[#FAFAF8] border border-[#1C1C1C]/10 rounded-xl font-medium text-sm text-[#1C1C1C] placeholder-[#1C1C1C]/40 focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition-all disabled:opacity-50"
           />
-
-          {/* Action button matching large rounded corner values */}
           <button
             type="submit"
-            className="absolute right-1.5 h-9 w-9 bg-[#F97316] hover:bg-[#F97316]/90 text-white rounded-lg flex items-center justify-center transition-colors shadow-sm cursor-pointer"
+            disabled={loading}
+            className="absolute right-1.5 h-9 w-9 bg-[#F97316] hover:bg-[#F97316]/90 text-white rounded-lg flex items-center justify-center transition-colors shadow-sm cursor-pointer disabled:opacity-50"
             aria-label="Send message"
           >
             <SendHorizontal className="w-4 h-4" />
