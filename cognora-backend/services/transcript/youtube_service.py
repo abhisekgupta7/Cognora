@@ -1,3 +1,4 @@
+import yt_dlp
 class YoutubeService:
     def extract_audio_from_video(video_url):
 
