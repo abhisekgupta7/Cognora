@@ -1,16 +1,16 @@
-from core.llm import whisper_model
+from groq import Groq
+import os
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 class WhisperService:
     def generate_transcript_from_audio(audio_file_path):
-        print(f"Generating transcript from {audio_file_path}...")
-
-        segments, info = whisper_model.transcribe(audio_file_path)
-        print(f"Detected language: {info.language}")
-        
-        text = " ".join(segment.text for segment in segments)
-        print(f"Transcript length: {len(text)}")
-        
-        if not text.strip():
-            raise Exception(f"Whisper returned empty transcript for {audio_file_path}")
-        
-        return text
+        print(f"Transcribing {audio_file_path} with Groq Whisper API...")
+        with open(audio_file_path, "rb") as f:
+            transcript = client.audio.transcriptions.create(
+                model="whisper-large-v3",
+                file=f,
+                language="ne"
+            )
+        print(f"Transcription complete: {len(transcript.text)} chars")
+        return transcript.text
