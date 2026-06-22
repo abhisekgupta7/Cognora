@@ -24,6 +24,7 @@ export default function CourseReportPage({
   const [loading, setLoading] = useState(false);
 
   const generateReport = async () => {
+    console.log("Sending report request:", { user_id: userId, lesson_id: lessonId, org_id: orgId });
     setLoading(true);
     const res = await fetch("/api/student-report", {
       method: "POST",
