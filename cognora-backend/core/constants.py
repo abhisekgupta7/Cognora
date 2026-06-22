@@ -43,13 +43,19 @@ USER_PROMPT_BUILDER = """
 Context from course material:
 {context}
 
-User question:
+Student question:
 {question}
 
 Instructions:
 - Answer based only on the context above
 - If multiple chunks are relevant, combine them logically
-- Explain like a tutor teaching a student"""
+- Structure your response clearly with:
+  * A direct answer first
+  * Key concepts explained simply
+  * An example if helpful
+- Keep it concise — no unnecessary padding
+- Explain like a tutor teaching a student, not like a textbook
+"""
 
 QUIZ_GENERATION_PROMPT = """
 You are an expert educational content creator.
@@ -75,8 +81,8 @@ Output format:
   }}
 ]
 
-Transcript:
-{transcript}
+Lesson content:
+{lesson_content}
 """
 
 STUDENT_REPORT_PROMPT = """

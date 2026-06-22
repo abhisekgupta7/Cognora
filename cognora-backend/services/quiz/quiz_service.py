@@ -14,7 +14,7 @@ class QuizService:
             print(f"No transcript found for lesson_id: {lesson_id} and org_id: {org_id}")
             return
 
-        prompt = PromptBuilder().build_quiz_prompt(transcript["transcript"])
+        prompt = PromptBuilder().build_quiz_prompt(transcript["transcript"])        
         llm = get_llm()
         quiz_response = llm.invoke(prompt).content
 

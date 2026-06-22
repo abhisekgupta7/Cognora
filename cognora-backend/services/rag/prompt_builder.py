@@ -11,9 +11,8 @@ class PromptBuilder:
         prompt = self.system_prompt + "\n\n" + self.user_prompt_template.format(context=context, question=question)
         return prompt
         
-    def build_quiz_prompt(self, transcript: str):
-        prompt=self.quiz_prompt_template.format(transcript=transcript)
-        return prompt
+    def build_quiz_prompt(self, lesson_content: str):
+        return self.quiz_prompt_template.format(lesson_content=lesson_content)
 
     def build_student_report_prompt(self, lesson_content: str, student_questions: list):
         questions_text = "\n".join(f"- {q}" for q in student_questions)
