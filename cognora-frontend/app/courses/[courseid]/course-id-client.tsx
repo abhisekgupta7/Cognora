@@ -182,7 +182,7 @@ export default function CourseIdClient({
             <div className="h-full overflow-y-auto">
               {selectedLesson ? (
                 <CourseReportPage
-                  userId={orgId.toString()} // replace with actual user_id from session
+                  userId={userId.toString()} // replace with actual user_id from session
                   lessonId={selectedLesson.id.toString()}
                   orgId={orgId}
                 />
