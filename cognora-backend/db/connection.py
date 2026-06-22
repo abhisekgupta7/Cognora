@@ -13,6 +13,7 @@ pool = psycopg_pool.ConnectionPool(
     max_size=10,
     reconnect_timeout=30,
     max_idle=300,
+    max_lifetime=600,
     kwargs={"row_factory": dict_row, "autocommit": True},
     open=True,
 )
