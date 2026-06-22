@@ -23,4 +23,4 @@ app.add_middleware(
 app.include_router(chat_router,prefix="/chat",tags=["chat"])
 app.include_router(Ingest_router,prefix="/ingestion",tags=["ingestion"])
 app.include_router(Quiz_router,prefix="/quiz",tags=["quiz"])
-app.include_router(StudentReport_router,prefix="/student_report",tags=["student_report"])
+app.include_router(Student_report_router,prefix="/student_report",tags=["student_report"])
