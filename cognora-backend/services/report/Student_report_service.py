@@ -19,7 +19,7 @@ class StudentReportService:
 
         if not student_questions:
             print(f"No student questions found for lesson_id: {lesson_id} and org_id: {org_id}")
-            return
+            raise ValueError("No questions found. Ask the AI tutor some questions first.")
 
         prompt = PromptBuilder().build_student_report_prompt(
             lesson_content["lesson_content"], 
