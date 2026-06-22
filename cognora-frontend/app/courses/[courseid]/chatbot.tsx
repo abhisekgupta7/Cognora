@@ -11,10 +11,12 @@ export default function Chatbot({
   courseId,
   lessonId,
   orgId,
+  userId,
 }: {
   courseId: string;
   lessonId: string;
-  orgId: number;
+    orgId: number;
+  userId: number;
 }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,7 @@ useEffect(() => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_id: 9,
+        user_id: userId,
         lesson_id: lessonId,
         question,
         course_id: courseId,

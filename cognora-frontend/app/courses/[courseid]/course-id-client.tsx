@@ -10,10 +10,12 @@ export default function CourseIdClient({
   courseId,
   orgId,
   lessons,
+  userId,
 }: {
   courseId: string;
   orgId: number;
   lessons: Lesson[];
+  userId: number;
 }) {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(
     lessons[0] || null,
@@ -152,6 +154,7 @@ export default function CourseIdClient({
                   courseId={courseId}
                   lessonId={selectedLesson.id.toString()}
                   orgId={orgId}
+                  userId={userId}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-[#1C1C1C]/40">

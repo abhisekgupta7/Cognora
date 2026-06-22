@@ -47,3 +47,7 @@ export async function getActiveOrgId(): Promise<number | null> {
   const context = await getActiveOrgContext();
   return context ? context.orgId : null;
 }
+export async function getActiveUserId(): Promise<number | null> {
+  const context = await getActiveOrgContext();
+  return context ? context.userId : null;
+}
