@@ -1,10 +1,10 @@
-from core.constants import SYSTEM_RAG_PROMPT,USER_PROMPT_BUILDER,QUIZ_GENERATION_PROMPT
+from core.constants import SYSTEM_RAG_PROMPT,USER_PROMPT_BUILDER,QUIZ_GENERATION_PROMPT,STUDENT_REPORT_PROMPT
 class PromptBuilder:
     def __init__(self):
         self.system_prompt = SYSTEM_RAG_PROMPT
         self.user_prompt_template = USER_PROMPT_BUILDER
         self.quiz_prompt_template = QUIZ_GENERATION_PROMPT
-        self.student_report_prompt_template = QUIZ_GENERATION_PROMPT
+        self.student_report_prompt_template = STUDENT_REPORT_PROMPT
 
     def build_prompt(self, question: str, chunks: list[str]):
         context = "\n\n".join(chunk["chunk_text"] for chunk in chunks)       
