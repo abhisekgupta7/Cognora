@@ -4,6 +4,7 @@ class PromptBuilder:
         self.system_prompt = SYSTEM_RAG_PROMPT
         self.user_prompt_template = USER_PROMPT_BUILDER
         self.quiz_prompt_template = QUIZ_GENERATION_PROMPT
+        self.student_report_prompt_template = QUIZ_GENERATION_PROMPT
 
     def build_prompt(self, question: str, chunks: list[str]):
         context = "\n\n".join(chunk["chunk_text"] for chunk in chunks)       
@@ -13,3 +14,10 @@ class PromptBuilder:
     def build_quiz_prompt(self, transcript: str):
         prompt=self.quiz_prompt_template.format(transcript=transcript)
         return prompt
+
+    def build_student_report_prompt(self, lesson_content: str, student_questions: list):
+        questions_text = "\n".join(f"- {q}" for q in student_questions)
+        return self.student_report_prompt_template.format(
+            lesson_content=lesson_content,
+            student_questions=questions_text
+        )

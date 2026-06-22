@@ -9,12 +9,17 @@ type Question = {
   answer: string;
 };
 
-export default function QuizPage({ lessonId, orgId }: { lessonId: string; orgId: number }) {
+export default function QuizPage({
+  lessonId,
+  orgId,
+}: {
+  lessonId: string;
+  orgId: number;
+}) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selected, setSelected] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const generateQuiz = async () => {
     setLoading(true);
     setQuestions([]);
@@ -28,24 +33,17 @@ export default function QuizPage({ lessonId, orgId }: { lessonId: string; orgId:
     });
 
     if (!res.ok) {
-      toast.error("Failed to generate quiz. Please try again.", { position: "top-center" });
+      toast.error("Failed to generate quiz. Please try again.", {
+        position: "top-center",
+      });
       setLoading(false);
       return;
     }
 
-    // Read full streamed response then parse JSON
-    const reader = res.body!.getReader();
-    const decoder = new TextDecoder();
-    let raw = "";
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      raw += decoder.decode(value, { stream: true });
-    }
-
     try {
-      const parsed = JSON.parse(raw);
+      const data = await res.json();
+      // handle both {quiz: [...]} and [...] shapes
+      const parsed = Array.isArray(data) ? data : data.quiz;
       setQuestions(parsed);
     } catch {
       toast.error("Failed to parse quiz. Please try again.");
@@ -64,8 +62,12 @@ export default function QuizPage({ lessonId, orgId }: { lessonId: string; orgId:
           <BookOpen className="w-7 h-7 text-[#F97316]" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-[#1C1C1C]">Test your knowledge</h2>
-          <p className="text-sm text-[#1C1C1C]/50 mt-1">Generate a quiz based on this lesson's content</p>
+          <h2 className="text-lg font-bold text-[#1C1C1C]">
+            Test your knowledge
+          </h2>
+          <p className="text-sm text-[#1C1C1C]/50 mt-1">
+            Generate a quiz based on this lesson's content
+          </p>
         </div>
         <button
           onClick={generateQuiz}
@@ -103,14 +105,20 @@ export default function QuizPage({ lessonId, orgId }: { lessonId: string; orgId:
 
       {/* Score banner */}
       {submitted && (
-        <div className={`mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 ${
-          score === questions.length
-            ? "bg-green-50 text-green-700"
-            : score >= questions.length / 2
-            ? "bg-orange-50 text-orange-700"
-            : "bg-red-50 text-red-700"
-        }`}>
-          {score === questions.length ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+        <div
+          className={`mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 ${
+            score === questions.length
+              ? "bg-green-50 text-green-700"
+              : score >= questions.length / 2
+                ? "bg-orange-50 text-orange-700"
+                : "bg-red-50 text-red-700"
+          }`}
+        >
+          {score === questions.length ? (
+            <CheckCircle className="w-4 h-4" />
+          ) : (
+            <XCircle className="w-4 h-4" />
+          )}
           You scored {score} out of {questions.length}
         </div>
       )}
@@ -118,9 +126,13 @@ export default function QuizPage({ lessonId, orgId }: { lessonId: string; orgId:
       {/* Questions */}
       <div className="flex flex-col gap-6">
         {questions.map((q, i) => (
-          <div key={i} className="bg-white border border-[#1C1C1C]/5 rounded-2xl p-5">
+          <div
+            key={i}
+            className="bg-white border border-[#1C1C1C]/5 rounded-2xl p-5"
+          >
             <p className="text-sm font-semibold text-[#1C1C1C] mb-4">
-              <span className="text-[#F97316] mr-2">{i + 1}.</span>{q.question}
+              <span className="text-[#F97316] mr-2">{i + 1}.</span>
+              {q.question}
             </p>
             <div className="flex flex-col gap-2">
               {q.options.map((opt) => {
@@ -128,16 +140,22 @@ export default function QuizPage({ lessonId, orgId }: { lessonId: string; orgId:
                 const isCorrect = opt === q.answer;
                 let style = "border border-[#1C1C1C]/10 text-[#1C1C1C]";
                 if (submitted) {
-                  if (isCorrect) style = "border border-green-400 bg-green-50 text-green-700";
-                  else if (isSelected) style = "border border-red-400 bg-red-50 text-red-700";
+                  if (isCorrect)
+                    style =
+                      "border border-green-400 bg-green-50 text-green-700";
+                  else if (isSelected)
+                    style = "border border-red-400 bg-red-50 text-red-700";
                 } else if (isSelected) {
-                  style = "border border-[#F97316] bg-[#F97316]/5 text-[#F97316]";
+                  style =
+                    "border border-[#F97316] bg-[#F97316]/5 text-[#F97316]";
                 }
                 return (
                   <button
                     key={opt}
                     disabled={submitted}
-                    onClick={() => setSelected((prev) => ({ ...prev, [i]: opt }))}
+                    onClick={() =>
+                      setSelected((prev) => ({ ...prev, [i]: opt }))
+                    }
                     className={`text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${style} disabled:cursor-default`}
                   >
                     {opt}

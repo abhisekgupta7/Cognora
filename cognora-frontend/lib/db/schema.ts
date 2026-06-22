@@ -7,6 +7,7 @@ import {
   jsonb,
   vector,
   text,
+  unique,
 } from "drizzle-orm/pg-core";
 
 enum paymentstatus {
@@ -211,3 +212,21 @@ export const chat_messages = pgTable("chat_messages", {
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });
+
+export const student_reports = pgTable("student_reports", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  user_id: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  lesson_id: uuid("lesson_id")
+    .notNull()
+    .references(() => lessons.id),
+  org_id: integer("org_id")
+    .notNull()
+    .references(() => organizations.id),
+  report_data: jsonb("report_data").notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  uniqueUserLessonOrg: unique().on(table.user_id, table.lesson_id, table.org_id),
+}));

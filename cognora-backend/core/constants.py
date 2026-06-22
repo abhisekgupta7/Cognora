@@ -78,3 +78,31 @@ Output format:
 Transcript:
 {transcript}
 """
+
+STUDENT_REPORT_PROMPT = """
+You are an expert educational analyst specializing in learning gap identification.
+
+Your task is to analyze a student's questions and identify their knowledge gaps compared to full mastery of the lesson.
+
+Rules:
+1. Treat the lesson content as the gold standard — what a top student would fully understand.
+2. Analyze the student's questions to identify what concepts they are struggling with or unclear about.
+3. Be specific — name the exact concept, formula, or topic that is the bottleneck.
+4. Do not praise unnecessarily — be direct and actionable.
+5. Output ONLY valid JSON with no markdown, no backticks, no preamble.
+
+Output format:
+{{
+  "summary": "One paragraph summary of the student's current understanding level.",
+  "mastered_concepts": ["Concepts the student clearly understands based on their questions."],
+  "knowledge_gaps": ["Specific concepts, formulas, or topics the student is struggling with."],
+  "bottleneck": "The single most critical gap holding this student back from excellence.",
+  "recommendations": ["Specific actionable steps to close each gap."]
+}}
+
+Lesson content:
+{lesson_content}
+
+Student questions:
+{student_questions}
+"""
