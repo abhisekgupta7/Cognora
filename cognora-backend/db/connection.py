@@ -14,6 +14,7 @@ pool = psycopg_pool.ConnectionPool(
     reconnect_timeout=30,
     max_idle=300,
     max_lifetime=600,
+    reconnect_failed=None,
     kwargs={"row_factory": dict_row, "autocommit": True},
     open=True,
 )
@@ -21,4 +22,5 @@ pool = psycopg_pool.ConnectionPool(
 pool.check()
 
 def get_conn():
+    pool.check()  # recycle broken connections before returning
     return pool.connection()
