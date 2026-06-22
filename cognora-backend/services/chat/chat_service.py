@@ -16,9 +16,9 @@ async def handle_chat(payload):
     question = payload["question"]
 
     session = ChatSessionRepository().create_session(user_id, course_id, org_id, lesson_id, thread_id=None)
-
+    session_id = session["id"]
     ChatMessageRepository().create_message(
-        session_id=session["id"],
+        session_id=session_id,
         org_id=org_id,
         role="user",
         content=question,
@@ -40,13 +40,14 @@ async def handle_chat(payload):
     full_response = ""
     for chunk in llm.stream(prompt):
         token = chunk.content
-        full_response += token
-        yield token                  # ← only yield, never return
+        if isinstance(token, str) and token:
+            full_response += token
+            yield token
 
-    # This runs AFTER streaming finishes
+    # This runs AFTER streaming finishes    
     sources = [c["chunk_text"] for c in chunks]
     ChatMessageRepository().create_message(
-        session_id=session["id"],
+        session_id=session_id,
         org_id=org_id,
         role="assistant",
         content=full_response,
