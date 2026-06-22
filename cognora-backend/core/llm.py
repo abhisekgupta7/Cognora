@@ -19,6 +19,15 @@ def get_llm():
         temperature=0.7,
     )
 
+def GetStructureLLm():
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+        temperature=0.0,  # Set to 0 for deterministic output
+    )
+
+structured_llm = GetStructureLLm().structured_llm
+
 def whisper_model():
     return WhisperModel("base", device="cpu", compute_type="int8")
 

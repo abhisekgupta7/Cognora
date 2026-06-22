@@ -1,4 +1,5 @@
 from db.connection import get_conn
+import json
 class QuizRepository:
     def save_quiz(self, lesson_id: str, org_id: int, quiz_data: dict):
         query = """
@@ -6,7 +7,6 @@ class QuizRepository:
             SET quiz = %s
             WHERE id = %s AND org_id = %s
         """
-
         with get_conn() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query, (json.dumps(quiz_data), lesson_id, org_id))
