@@ -104,7 +104,7 @@ export default function CourseIdClient({
             <div className="flex flex-col h-full overflow-y-auto">
               {selectedLesson ? (
                 <>
-                  <div className="aspect-video w-full bg-black shrink-0">
+                  <div className="aspect-video w-3/4 bg-black shrink-0">
                     <iframe
                       className="w-full h-full"
                       src={toYouTubeEmbed(
