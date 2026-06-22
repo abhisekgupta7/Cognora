@@ -43,7 +43,13 @@ export default function QuizPage({
     try {
       const data = await res.json();
       // handle both {quiz: [...]} and [...] shapes
-      const parsed = Array.isArray(data) ? data : data.quiz;
+      console.log("Quiz API response:", data);
+      const parsed = Array.isArray(data) ? data : (data.quiz ?? []);
+      if (parsed.length === 0) {
+        toast.error("No quiz questions returned.");
+        setLoading(false);
+        return;
+      }
       setQuestions(parsed);
     } catch {
       toast.error("Failed to parse quiz. Please try again.");
